@@ -12,7 +12,8 @@ Source1:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
 Source2:	%{name}.init
 URL:		http://bird.network.cz/
 BuildRequires:	readline-devel >= 4.2
-Prereq:		/sbin/chkconfig
+PreReq:		rc-scripts
+Requires(post,preun):	/sbin/chkconfig
 Provides:	routingdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	gated
