@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# bird		Starts the Dynamic Route Daemon 
+#
+# chkconfig:	345 80 45
+#
+# description:	Dynamic Route Daemon for IPv4 and IPv6 routers
+#
+# processname:	bird
+# config:	/etc/bird.conf
+
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Get service config
+[ -f /etc/sysconfig/bird ] && . /etc/sysconfig/zebra
+
+# Check that networking is up.
+if is_no "${NETWORKING}"; then
+	msg_Network_Down bird
+	exit 1
+fi
+
+# Sanity checks.
+[ -f /etc/bird.conf ] || exit 0
+
+
+# See how we were called.
+case "$1" in
+  start)
+	# Check if the services are already running?
+	if [ ! -f /var/lock/subsys/bird ]; then
+		msg_starting "bird"
+		daemon ${SERVICE_RUN_NICE_LEVEL} bird -d 
+		touch /var/lock/subsys/bird
+	else
+		msg_Already_Running "bird"
+	fi
+	;;
+  stop)
+        # Stop daemons.
+	if [ -f /var/lock/subsys/bird ]; then
+ 		msg_stopping "bird"
+		killproc bird
+		rm -f /var/lock/subsys/bird
+	else
+		msg_Not_Running "bird"
+	fi
+	;;
+  status)
+	status bird
+	;;
+  restart|reload)
+	$0 stop
+	$0 start
+	;;
+  *)
+	msg_Usage "$0 {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit 0
