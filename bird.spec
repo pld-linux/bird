@@ -186,6 +186,7 @@ if [ "$1" = "0" ]; then
 fi
 
 %files
+%defattr(644,root,root,755)
 %doc doc/*.html TODO README
 %attr(755,root,root) %{_sbindir}/birdc
 
