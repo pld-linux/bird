@@ -21,6 +21,7 @@ Source4:	%{name}-ipv6.sysconfig
 Patch0:		%{name}-posix.patch
 Patch1:		%{name}-flex.patch
 URL:		http://bird.network.cz/
+BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	readline-devel >= 4.2
 PreReq:		rc-scripts
