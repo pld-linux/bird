@@ -1,5 +1,5 @@
 Summary:	Routing daemon
-Summary(pl):	Daemon dynamicznego routingu
+Summary(pl):	Demon dynamicznego routingu
 Name:		bird
 Version:	1.0.4
 Release:	2
@@ -15,6 +15,7 @@ URL:		http://bird.network.cz/
 BuildRequires:	readline-devel >= 4.2
 Provides:	routingdaemon
 Prereq:		rc-scripts
+Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	gated
 Obsoletes:	mtr
@@ -56,6 +57,9 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
 
 gzip -9nf %{name}-doc-%{version}/doc/*.ps TODO README
 
+%clean
+rm -rf $RPM_BUILD_ROOT
+
 %post
 /sbin/chkconfig --add %{name} >&2
 
@@ -72,9 +76,6 @@ if [ "$1" = "0" ]; then
 	fi
         /sbin/chkconfig --del %{name} >&2
 fi
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
