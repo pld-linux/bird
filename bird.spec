@@ -166,7 +166,7 @@ if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/%{name}-ipv4 ]; then
 		/etc/rc.d/init.d/%{name}-ipv4 stop >&2
 	fi
-        /sbin/chkconfig --del %{name}-ipv4 >&2
+	/sbin/chkconfig --del %{name}-ipv4 >&2
 fi
 
 %post ipv6
@@ -183,7 +183,7 @@ if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/%{name}-ipv6 ]; then
 		/etc/rc.d/init.d/%{name}-ipv6 stop >&2
 	fi
-        /sbin/chkconfig --del %{name}-ipv6 >&2
+	/sbin/chkconfig --del %{name}-ipv6 >&2
 fi
 
 %files
