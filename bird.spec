@@ -6,9 +6,9 @@ Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
-# Source0-md5	e21533bf0223c3a1fd2b984a5952fd45
+# Source0-md5:	e21533bf0223c3a1fd2b984a5952fd45
 Source1:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
-# Source1-md5	a8fb98281a918a725ded174c3f9655a3
+# Source1-md5:	a8fb98281a918a725ded174c3f9655a3
 Source2:	%{name}.init
 URL:		http://bird.network.cz/
 BuildRequires:	readline-devel >= 4.2
