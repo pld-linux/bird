@@ -11,9 +11,8 @@ Source2:	%{name}.init
 Patch0:		%{name}-stdio.patch
 URL:		http://bird.network.cz/
 BuildRequires:	readline-devel >= 4.2
-Provides:	routingdaemon
-Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
+Provides:	routingdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	gated
 Obsoletes:	mrt
@@ -53,8 +52,6 @@ install birdc $RPM_BUILD_ROOT%{_sbindir}
 install doc/bird.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
 
-gzip -9nf %{name}-doc-*/doc/*.ps TODO README
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -77,7 +74,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.html %{name}-doc-*/doc/*.ps.gz *.gz
+%doc doc/*.html %{name}-doc-*/doc/*.ps TODO README
 
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/*
