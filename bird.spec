@@ -2,7 +2,7 @@ Summary:	Routing daemon
 Summary(pl):	Daemon dynamicznego routingu
 Name:		bird
 Version:	1.0.4
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
@@ -10,7 +10,9 @@ Group(pl):	Sieciowe/Serwery
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
 Source1:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
 Source2:	%{name}.init
+Patch0:		%{name}-time.h.patch
 URL:		http://bird.network.cz/
+BuildRequires:	readline-devel >= 4.2
 Provides:	routingdaemon
 Prereq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -33,6 +35,7 @@ filtrów o du¿ych mo¿liwo¶ciach.
 
 %prep
 %setup -q -a 1
+%patch -p1
 
 %build
 %configure \
