@@ -8,7 +8,7 @@ Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
 Source1:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
 Source2:	%{name}.init
-Patch0:		%{name}-stdio.h
+Patch0:		%{name}-stdio.patch
 URL:		http://bird.network.cz/
 BuildRequires:	readline-devel >= 4.2
 Provides:	routingdaemon
