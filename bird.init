@@ -35,7 +35,7 @@ case "$1" in
 	# Check if the services are already running?
 	if [ ! -f /var/lock/subsys/bird ]; then
 		msg_starting "bird"
-		daemon ${SERVICE_RUN_NICE_LEVEL} bird -d 
+		daemon ${SERVICE_RUN_NICE_LEVEL} bird
 		touch /var/lock/subsys/bird
 	else
 		msg_Already_Running "bird"
