@@ -11,7 +11,13 @@ Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
 Source1:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
 Source2:	%{name}.init
 URL:		http://bird.network.cz/
+Provides:	routingdaemon
+Prereq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Obsoletes:	gated
+Obsoletes:	mtr
+Obsoletes:	zebra
+Obsoletes:	zebra-guile
 
 %description
 The BIRD project is an attempt to create a routing daemon running on
@@ -37,13 +43,15 @@ filtrów o du¿ych mo¿liwo¶ciach.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
-install -d $RPM_BUILD_ROOT%{_sbindir}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/rc.d/init.d,%{_sbindir}}
 
-install bird			$RPM_BUILD_ROOT%{_sbindir}
-install birdc			$RPM_BUILD_ROOT%{_sbindir}
-install doc/bird.conf.example	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
-install %{SOURCE2}		$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
+install bird $RPM_BUILD_ROOT%{_sbindir}
+install birdc $RPM_BUILD_ROOT%{_sbindir}
+
+install doc/bird.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
+
+gzip -9nf %{name}-doc-%{version}/doc/*.ps TODO README
 
 %post
 /sbin/chkconfig --add %{name} >&2
@@ -67,7 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.html %{name}-doc-%{version}/doc/*.ps TODO README
+%doc doc/*.html %{name}-doc-%{version}/doc/*.ps.gz *.gz
 
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/*
