@@ -44,13 +44,13 @@ filtrów o du¿ych mo¿liwo¶ciach.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/rc.d/init.d,%{_sbindir}}
+install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_sbindir}}
 
 install bird $RPM_BUILD_ROOT%{_sbindir}
 install birdc $RPM_BUILD_ROOT%{_sbindir}
 
 install doc/bird.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
