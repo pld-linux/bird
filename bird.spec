@@ -66,7 +66,7 @@ if [ -f /var/lock/subsys/%{name} ]; then
 else
 	echo "Run '/etc/rc.d/init.d/%{name} start' to start routing deamon." >&2
 fi
-    
+
 %preun
 if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/%{name} ]; then
