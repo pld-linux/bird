@@ -1,14 +1,14 @@
 Summary:	Routing daemon
 Summary(pl):	Demon dynamicznego routingu
 Name:		bird
-Version:	1.0.4
-Release:	2
+Version:	1.0.5
+Release:	0.1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
 Source1:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
 Source2:	%{name}.init
-Patch0:		%{name}-time.h.patch
+Patch0:		%{name}-stdio.h
 URL:		http://bird.network.cz/
 BuildRequires:	readline-devel >= 4.2
 Provides:	routingdaemon
@@ -34,7 +34,7 @@ filtrów o du¿ych mo¿liwo¶ciach.
 
 %prep
 %setup -q -a 1
-%patch -p1
+%patch0	-p1
 
 %build
 %configure2_13 \
@@ -53,7 +53,7 @@ install birdc $RPM_BUILD_ROOT%{_sbindir}
 install doc/bird.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
 
-gzip -9nf %{name}-doc-%{version}/doc/*.ps TODO README
+gzip -9nf %{name}-doc-*/doc/*.ps TODO README
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -77,7 +77,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.html %{name}-doc-%{version}/doc/*.ps.gz *.gz
+%doc doc/*.html %{name}-doc-*/doc/*.ps.gz *.gz
 
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/*
