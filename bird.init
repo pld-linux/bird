@@ -21,7 +21,7 @@
 
 # Check that networking is up.
 if is_no "${NETWORKING}"; then
-	msg_Network_Down bird
+	msg_network_down bird
 	exit 1
 fi
 
@@ -38,17 +38,19 @@ case "$1" in
 		daemon ${SERVICE_RUN_NICE_LEVEL} bird
 		touch /var/lock/subsys/bird
 	else
-		msg_Already_Running "bird"
+		msg_already_running "bird"
+		exit 1
 	fi
 	;;
   stop)
-        # Stop daemons.
+ 	# Stop daemons.
 	if [ -f /var/lock/subsys/bird ]; then
  		msg_stopping "bird"
 		killproc bird
 		rm -f /var/lock/subsys/bird
 	else
-		msg_Not_Running "bird"
+		msg_not_running "bird"
+		exit 1
 	fi
 	;;
   status)
@@ -59,7 +61,7 @@ case "$1" in
 	$0 start
 	;;
   *)
-	msg_Usage "$0 {start|stop|status|restart|reload}"
+	msg_usage "$0 {start|stop|restart|reload|status}"
 	exit 1
 esac
 
