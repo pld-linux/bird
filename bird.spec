@@ -65,7 +65,7 @@ UNIX-like systems (but not necessarily limited to them) with full
 support of all modern routing protocols, easy to use configuration
 interface and powerful route filtering language.
 
-%description -l pl ipv4
+%description ipv4 -l pl
 Projekt BIRD ma na celu utworzenie daemona dynamicznego routingu
 pracuj±cego na systemach UNIX z pe³nym wsparciem dla nowoczesnych
 protoko³ów routingu, ³atwym interfejsem konfiguracji i jêzykiem
@@ -91,7 +91,7 @@ UNIX-like systems (but not necessarily limited to them) with full
 support of all modern routing protocols, easy to use configuration
 interface and powerful route filtering language.
 
-%description -l pl ipv6
+%description ipv6 -l pl
 Projekt BIRD ma na celu utworzenie daemona dynamicznego routingu
 pracuj±cego na systemach UNIX z pe³nym wsparciem dla nowoczesnych
 protoko³ów routingu, ³atwym interfejsem konfiguracji i jêzykiem
