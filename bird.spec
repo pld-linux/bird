@@ -10,7 +10,10 @@ Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
 Source1:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
 # Source1-md5:	0a8ace7c81218e6c1bfc2a794ccff3f4
 Source2:	%{name}.init
+Patch0:		%{name}-posix.patch
+Patch1:		%{name}-flex.patch
 URL:		http://bird.network.cz/
+BuildRequires:	automake
 BuildRequires:	readline-devel >= 4.2
 PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
@@ -34,9 +37,12 @@ protoko³ów routingu, ³atwym interfejsem konfiguracji i jêzykiem
 filtrów o du¿ych mo¿liwo¶ciach.
 
 %prep
-%setup -q -a 1
+%setup -q -a1
+%patch0 -p1
+%patch1 -p1
 
 %build
+cp -f /usr/share/automake/config.* tools
 %configure2_13 \
 	--disable-memcheck \
 	--enable-client \
