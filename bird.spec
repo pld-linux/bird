@@ -39,7 +39,7 @@ filtrów o du¿ych mo¿liwo¶ciach.
 %patch -p1
 
 %build
-%configure \
+%configure2_13 \
 	--disable-memcheck \
 	--enable-client \
 	--enable-ipv6
