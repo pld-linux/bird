@@ -57,10 +57,10 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
 gzip -9nf %{name}-doc-%{version}/doc/*.ps TODO README
 
 %post
-DESC="routing daemon"; %chkconfig_post
+DESC="routing daemon"; %chkconfig_add
     
 %preun
-%chkconfig_preun
+%chkconfig_del
 
 %clean
 rm -rf $RPM_BUILD_ROOT
