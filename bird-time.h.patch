@@ -1,0 +1,21 @@
+--- bird-1.0.4/sysdep/unix/io.c~	Fri Jun  9 09:30:22 2000
++++ bird-1.0.4/sysdep/unix/io.c	Thu Apr 19 05:28:30 2001
+@@ -15,6 +15,7 @@
+ #include <sys/un.h>
+ #include <unistd.h>
+ #include <errno.h>
++#include <time.h>
+ 
+ #include "nest/bird.h"
+ #include "lib/lists.h"
+--- bird-1.0.4/sysdep/unix/log.c~	Wed Aug 23 08:57:42 2000
++++ bird-1.0.4/sysdep/unix/log.c	Thu Apr 19 05:31:51 2001
+@@ -18,7 +18,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <stdarg.h>
+-#include <sys/time.h>
++#include <time.h>
+ 
+ #include "nest/bird.h"
+ #include "nest/cli.h"
