@@ -57,21 +57,10 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
 gzip -9nf %{name}-doc-%{version}/doc/*.ps TODO README
 
 %post
-/sbin/chkconfig --add %{name} >&2
-
-if [ -f /var/lock/subsys/%{name} ]; then
-	/etc/rc.d/init.d/%{name} restart >&2
-else
-	echo "Run '/etc/rc.d/init.d/%{name} start' to start routing deamon." >&2
-fi
+DESC="routing daemon"; %chkconfig_post
     
 %preun
-if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/%{name} ]; then
-		/etc/rc.d/init.d/%{name} stop >&2
-	fi
-        /sbin/chkconfig --del %{name} >&2
-fi
+%chkconfig_preun
 
 %clean
 rm -rf $RPM_BUILD_ROOT
