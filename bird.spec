@@ -2,7 +2,7 @@ Summary:	Routing daemon
 Summary(pl):	Demon dynamicznego routingu
 Name:		bird
 Version:	1.0.5
-Release:	0.1
+Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
@@ -16,7 +16,7 @@ Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	gated
-Obsoletes:	mtr
+Obsoletes:	mrt
 Obsoletes:	zebra
 Obsoletes:	zebra-guile
 
