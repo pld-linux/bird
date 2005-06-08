@@ -23,6 +23,8 @@ Patch1:		%{name}-flex.patch
 URL:		http://bird.network.cz/
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	bison
+BuildRequires:	flex
 BuildRequires:	readline-devel >= 4.2
 PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
@@ -196,8 +198,8 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/bird
 %attr(754,root,root) /etc/rc.d/init.d/bird-ipv4
-%attr(754,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/bird-ipv4
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bird.conf
+%attr(754,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv4
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird.conf
 %endif
 
 %if %{with ipv6}
@@ -205,7 +207,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/bird-6
 %attr(755,root,root) %{_sbindir}/birdc-6
-%attr(754,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/bird-ipv6
-%attr(754,root,root) %config(noreplace) %verify(not size mtime md5) /etc/rc.d/init.d/bird-ipv6
-#%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bird-6.conf
+%attr(754,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv6
+%attr(754,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/rc.d/init.d/bird-ipv6
+#%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird-6.conf
 %endif
