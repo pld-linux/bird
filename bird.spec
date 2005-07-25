@@ -19,6 +19,7 @@ Source2:	%{name}-ipv4.sysconfig
 Source3:	%{name}-ipv6.init
 Source4:	%{name}-ipv6.sysconfig
 Patch0:		%{name}-flex.patch
+Patch1:		%{name}-64bit.patch
 URL:		http://bird.network.cz/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -101,6 +102,7 @@ filtrów o du¿ych mo¿liwo¶ciach.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 cp -f /usr/share/automake/config.* tools
