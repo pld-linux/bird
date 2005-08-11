@@ -1,6 +1,6 @@
 
-%bcond_without ipv6	# disable IPv6 support (and building bird-ipv6 package) 
-%bcond_without ipv4	# disable IPv4 support (and building bird-ipv4 package)
+%bcond_without	ipv6	# disable IPv6 support (and building bird-ipv6 package) 
+%bcond_without	ipv4	# disable IPv4 support (and building bird-ipv4 package)
 
 # TODO:
 #	- trigger to clean up after old bird package (stop, chkconfig --del)
