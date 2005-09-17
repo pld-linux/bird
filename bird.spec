@@ -9,7 +9,7 @@ Summary:	Routing daemon
 Summary(pl):	Demon dynamicznego routingu
 Name:		bird
 Version:	1.0.11
-Release:	0.1
+Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
