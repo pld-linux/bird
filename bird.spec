@@ -26,14 +26,15 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	readline-devel >= 4.2
-PreReq:		rc-scripts
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	bird-daemon
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Requires:	rc-scripts
 Obsoletes:	gated
 Obsoletes:	mrt
 Obsoletes:	zebra
 Obsoletes:	zebra-guile
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 The BIRD project is an attempt to create a routing daemon running on
@@ -51,15 +52,15 @@ filtrów o du¿ych mo¿liwo¶ciach.
 Summary:	Routing daemon for IPv4
 Summary(pl):	Demon dynamicznego routingu IPv4
 Group:		Networking/Daemons
-PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
-Provides:	routingdaemon
+Requires:	%{name} = %{version}-%{release}
+Requires:	rc-scripts
 Provides:	bird-daemon
+Provides:	routingdaemon
 Obsoletes:	gated
 Obsoletes:	mrt
 Obsoletes:	zebra
 Obsoletes:	zebra-guile
-Requires:	%{name} = %{version}-%{release}
 
 %description ipv4
 The BIRD project is an attempt to create a routing daemon running on
@@ -77,15 +78,15 @@ filtrów o du¿ych mo¿liwo¶ciach.
 Summary:	Routing daemon for IPv6
 Summary(pl):	Demon dynamicznego routingu IPv6
 Group:		Networking/Daemons
-PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
-Provides:	routingdaemon
+Requires:	%{name} = %{version}-%{release}
+Requires:	rc-scripts
 Provides:	bird-daemon
+Provides:	routingdaemon
 Obsoletes:	gated
 Obsoletes:	mrt
 Obsoletes:	zebra
 Obsoletes:	zebra-guile
-Requires:	%{name} = %{version}-%{release}
 
 %description ipv6
 The BIRD project is an attempt to create a routing daemon running on
@@ -155,37 +156,23 @@ install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/%{name}-ipv6
 rm -rf $RPM_BUILD_ROOT
 
 %post ipv4
-/sbin/chkconfig --add %{name}-ipv4 >&2
-
-if [ -f /var/lock/subsys/%{name}-ipv4 ]; then
-	/etc/rc.d/init.d/%{name}-ipv4 restart >&2
-else
-	echo "Run '/etc/rc.d/init.d/%{name}-ipv4 start' to start routing deamon." >&2
-fi
+/sbin/chkconfig --add %{name}-ipv4
+%service %{name}-ipv4 restart "routing daemon"
 
 %preun ipv4
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/%{name}-ipv4 ]; then
-		/etc/rc.d/init.d/%{name}-ipv4 stop >&2
-	fi
-	/sbin/chkconfig --del %{name}-ipv4 >&2
+	%service %{name}-ipv4 stop
+	/sbin/chkconfig --del %{name}-ipv4
 fi
 
 %post ipv6
-/sbin/chkconfig --add %{name}-ipv6 >&2
-
-if [ -f /var/lock/subsys/%{name}-ipv6 ]; then
-	/etc/rc.d/init.d/%{name}-ipv6 restart >&2
-else
-	echo "Run '/etc/rc.d/init.d/%{name}-ipv6 start' to start routing deamon." >&2
-fi
+/sbin/chkconfig --add %{name}-ipv6
+%service %{name}-ipv6 restart "routing daemon"
 
 %preun ipv6
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/%{name}-ipv6 ]; then
-		/etc/rc.d/init.d/%{name}-ipv6 stop >&2
-	fi
-	/sbin/chkconfig --del %{name}-ipv6 >&2
+	%service %{name}-ipv6 stop
+	/sbin/chkconfig --del %{name}-ipv6
 fi
 
 %files
