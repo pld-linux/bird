@@ -1,15 +1,15 @@
-
-%bcond_without	ipv6	# disable IPv6 support (and building bird-ipv6 package) 
-%bcond_without	ipv4	# disable IPv4 support (and building bird-ipv4 package)
-
 # TODO:
 #	- trigger to clean up after old bird package (stop, chkconfig --del)
-
+#
+# Conditional build:
+%bcond_without	ipv6	# disable IPv6 support (and building bird-ipv6 package)
+%bcond_without	ipv4	# disable IPv4 support (and building bird-ipv4 package)
+#
 Summary:	Routing daemon
 Summary(pl):	Demon dynamicznego routingu
 Name:		bird
 Version:	1.0.11
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
