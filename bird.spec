@@ -114,7 +114,7 @@ cp -f /usr/share/automake/config.* tools
 	--disable-memcheck \
 	--enable-client \
 	--enable-ipv6
-%{__make}
+%{__make} -j1
 
 mv bird bird-6
 
@@ -126,7 +126,7 @@ mv bird bird-6
 	--disable-memcheck \
 	--enable-client \
 	--disable-ipv6
-%{__make}
+%{__make} -j1
 %endif
 
 %install
