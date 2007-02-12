@@ -6,7 +6,7 @@
 %bcond_without	ipv4	# disable IPv4 support (and building bird-ipv4 package)
 #
 Summary:	Routing daemon
-Summary(pl):	Demon dynamicznego routingu
+Summary(pl.UTF-8):   Demon dynamicznego routingu
 Name:		bird
 Version:	1.0.11
 Release:	2
@@ -42,15 +42,15 @@ UNIX-like systems (but not necessarily limited to them) with full
 support of all modern routing protocols, easy to use configuration
 interface and powerful route filtering language.
 
-%description -l pl
+%description -l pl.UTF-8
 Projekt BIRD ma na celu utworzenie daemona dynamicznego routingu
-pracuj眂ego na systemach UNIX z pe硁ym wsparciem dla nowoczesnych
-protoko丑w routingu, 砤twym interfejsem konfiguracji i j陑ykiem
-filtr體 o du縴ch mo縧iwo禼iach.
+pracuj膮cego na systemach UNIX z pe艂nym wsparciem dla nowoczesnych
+protoko艂贸w routingu, 艂atwym interfejsem konfiguracji i j臋zykiem
+filtr贸w o du偶ych mo偶liwo艣ciach.
 
 %package ipv4
 Summary:	Routing daemon for IPv4
-Summary(pl):	Demon dynamicznego routingu IPv4
+Summary(pl.UTF-8):   Demon dynamicznego routingu IPv4
 Group:		Networking/Daemons
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name} = %{version}-%{release}
@@ -68,15 +68,15 @@ UNIX-like systems (but not necessarily limited to them) with full
 support of all modern routing protocols, easy to use configuration
 interface and powerful route filtering language.
 
-%description ipv4 -l pl
+%description ipv4 -l pl.UTF-8
 Projekt BIRD ma na celu utworzenie daemona dynamicznego routingu
-pracuj眂ego na systemach UNIX z pe硁ym wsparciem dla nowoczesnych
-protoko丑w routingu, 砤twym interfejsem konfiguracji i j陑ykiem
-filtr體 o du縴ch mo縧iwo禼iach.
+pracuj膮cego na systemach UNIX z pe艂nym wsparciem dla nowoczesnych
+protoko艂贸w routingu, 艂atwym interfejsem konfiguracji i j臋zykiem
+filtr贸w o du偶ych mo偶liwo艣ciach.
 
 %package ipv6
 Summary:	Routing daemon for IPv6
-Summary(pl):	Demon dynamicznego routingu IPv6
+Summary(pl.UTF-8):   Demon dynamicznego routingu IPv6
 Group:		Networking/Daemons
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name} = %{version}-%{release}
@@ -94,11 +94,11 @@ UNIX-like systems (but not necessarily limited to them) with full
 support of all modern routing protocols, easy to use configuration
 interface and powerful route filtering language.
 
-%description ipv6 -l pl
+%description ipv6 -l pl.UTF-8
 Projekt BIRD ma na celu utworzenie daemona dynamicznego routingu
-pracuj眂ego na systemach UNIX z pe硁ym wsparciem dla nowoczesnych
-protoko丑w routingu, 砤twym interfejsem konfiguracji i j陑ykiem
-filtr體 o du縴ch mo縧iwo禼iach.
+pracuj膮cego na systemach UNIX z pe艂nym wsparciem dla nowoczesnych
+protoko艂贸w routingu, 艂atwym interfejsem konfiguracji i j臋zykiem
+filtr贸w o du偶ych mo偶liwo艣ciach.
 
 %prep
 %setup -q
