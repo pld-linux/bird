@@ -6,7 +6,7 @@
 %bcond_without	ipv4	# disable IPv4 support (and building bird-ipv4 package)
 #
 Summary:	Routing daemon
-Summary(pl.UTF-8):   Demon dynamicznego routingu
+Summary(pl.UTF-8):	Demon dynamicznego routingu
 Name:		bird
 Version:	1.0.11
 Release:	2
@@ -50,7 +50,7 @@ filtrów o dużych możliwościach.
 
 %package ipv4
 Summary:	Routing daemon for IPv4
-Summary(pl.UTF-8):   Demon dynamicznego routingu IPv4
+Summary(pl.UTF-8):	Demon dynamicznego routingu IPv4
 Group:		Networking/Daemons
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name} = %{version}-%{release}
@@ -76,7 +76,7 @@ filtrów o dużych możliwościach.
 
 %package ipv6
 Summary:	Routing daemon for IPv6
-Summary(pl.UTF-8):   Demon dynamicznego routingu IPv6
+Summary(pl.UTF-8):	Demon dynamicznego routingu IPv6
 Group:		Networking/Daemons
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name} = %{version}-%{release}
