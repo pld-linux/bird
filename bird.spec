@@ -8,18 +8,17 @@
 Summary:	Routing daemon
 Summary(pl.UTF-8):	Demon dynamicznego routingu
 Name:		bird
-Version:	1.0.11
-Release:	2
+Version:	1.0.12
+Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
-# Source0-md5:	9f9dfe2af0bde45a0adbbd0ebc36f249
+# Source0-md5:	f404bde9b664ef801a81c7bdc784ec7c
 Source1:	%{name}-ipv4.init
 Source2:	%{name}-ipv4.sysconfig
 Source3:	%{name}-ipv6.init
 Source4:	%{name}-ipv6.sysconfig
-Patch0:		%{name}-flex.patch
-Patch1:		%{name}-64bit.patch
+Patch0:		%{name}-64bit.patch
 URL:		http://bird.network.cz/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -103,7 +102,6 @@ filtrów o dużych możliwościach.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 cp -f /usr/share/automake/config.* tools
