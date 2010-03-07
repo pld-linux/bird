@@ -1,13 +1,12 @@
 diff -dur -x '*~' bird-1.0.11.orig/conf/conf.h bird-1.0.11/conf/conf.h
 --- bird-1.0.11.orig/conf/conf.h	2000-06-04 21:30:13.000000000 +0200
 +++ bird-1.0.11/conf/conf.h	2005-07-22 15:30:41.000000000 +0200
-@@ -75,7 +75,7 @@
    struct symbol *next;
    struct sym_scope *scope;
    int class;
 -  int aux;
 +  long aux;
-   void *aux2; 
+   void *aux2;
    void *def;
    char name[1];
 diff -dur -x '*~' bird-1.0.11.orig/conf/confbase.Y bird-1.0.11/conf/confbase.Y
@@ -22,36 +21,6 @@ diff -dur -x '*~' bird-1.0.11.orig/conf/confbase.Y bird-1.0.11/conf/confbase.Y
    u32 i32;
    ip_addr a;
    struct symbol *s;
-diff -dur -x '*~' bird-1.0.11.orig/filter/config.Y bird-1.0.11/filter/config.Y
---- bird-1.0.11.orig/filter/config.Y	2004-05-31 19:44:39.000000000 +0200
-+++ bird-1.0.11/filter/config.Y	2005-07-22 15:29:16.000000000 +0200
-@@ -97,7 +97,7 @@
- decls: /* EMPTY */ { $$ = NULL; }
-  | one_decl ';' decls {
-      $$ = $1;
--     $$->aux = (int) $3;
-+     $$->aux = (long) $3;
-    }
-  ;
- 
-@@ -105,7 +105,7 @@
- declsn: one_decl { $$ = $1; }
-  | declsn ';' one_decl {
-      $$ = $1;
--     $$->aux = (int) $3;
-+     $$->aux = (long) $3;
-    }
-  ;
- 
-@@ -168,7 +168,7 @@
-      cf_push_scope($2);
-    } function_params function_body {
-      $2->def = $5;
--     $2->aux = (int) $4;
-+     $2->aux = (long) $4;
-      $2->aux2 = $5;
-      DBG("Hmm, we've got one function here - %s\n", $2->name); 
-      cf_pop_scope();
 diff -dur -x '*~' bird-1.0.11.orig/filter/filter.h bird-1.0.11/filter/filter.h
 --- bird-1.0.11.orig/filter/filter.h	2000-05-30 12:42:39.000000000 +0200
 +++ bird-1.0.11/filter/filter.h	2005-07-22 15:30:18.000000000 +0200

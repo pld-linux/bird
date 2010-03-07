@@ -5,19 +5,21 @@
 %bcond_without	ipv6	# disable IPv6 support (and building bird-ipv6 package)
 %bcond_without	ipv4	# disable IPv4 support (and building bird-ipv4 package)
 #
-Summary:	Routing daemon
-Summary(pl.UTF-8):	Demon dynamicznego routingu
+Summary:	The BIRD Internet Routing Daemon
+Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
-Version:	1.0.12
+Version:	1.2.1
 Release:	1
-License:	GPL
+License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
-# Source0-md5:	f404bde9b664ef801a81c7bdc784ec7c
+# Source0-md5:	e158bd0a72e345841e39764975ee1d21
 Source1:	%{name}-ipv4.init
 Source2:	%{name}-ipv4.sysconfig
 Source3:	%{name}-ipv6.init
 Source4:	%{name}-ipv6.sysconfig
+Source5:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
+# Source5-md5:	a82474c87f5c79f29a6c9088f9dfe30a
 Patch0:		%{name}-64bit.patch
 URL:		http://bird.network.cz/
 BuildRequires:	autoconf
@@ -100,14 +102,16 @@ protokołów routingu, łatwym interfejsem konfiguracji i językiem
 filtrów o dużych możliwościach.
 
 %prep
-%setup -q
+%setup -q -a 5
 %patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.* tools
+%{__autoconf}
+
+export CFLAGS="%{rpmcflags} -I%{_includedir}/ncurses"
 
 %if %{with ipv6}
-%{__autoconf}
 %configure \
 	--disable-memcheck \
 	--enable-client \
@@ -175,7 +179,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.html TODO README
+%doc doc/*.html doc/reply_codes %{name}-doc-%{version}/doc/*.ps ChangeLog NEWS README TODO
 %attr(755,root,root) %{_sbindir}/birdc
 
 %if %{with ipv4}
