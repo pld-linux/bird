@@ -20,7 +20,6 @@ Source3:	%{name}-ipv6.init
 Source4:	%{name}-ipv6.sysconfig
 Source5:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
 # Source5-md5:	a82474c87f5c79f29a6c9088f9dfe30a
-Patch0:		%{name}-64bit.patch
 URL:		http://bird.network.cz/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -103,7 +102,6 @@ filtrów o dużych możliwościach.
 
 %prep
 %setup -q -a 5
-%patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.* tools
