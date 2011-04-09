@@ -4,6 +4,7 @@
 # Conditional build:
 %bcond_without	ipv6	# disable IPv6 support (and building bird-ipv6 package)
 %bcond_without	ipv4	# disable IPv4 support (and building bird-ipv4 package)
+%bcond_with	alien # enable possibility to import 'alien' routes import into bird's routing table
 #
 Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
@@ -21,6 +22,7 @@ Source4:	%{name}-ipv6.sysconfig
 Source5:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
 # Source5-md5:	c99c927430a4ccb07d3317614520caf2
 Patch0:		%{name}-tinfo.patch
+%{?with_alien:Patch1:		%{name}-allowalien.patch}
 URL:		http://bird.network.cz/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -104,6 +106,9 @@ filtrów o dużych możliwościach.
 %prep
 %setup -q -a 5
 %patch0 -p1
+%if %{with alien}
+%patch1 -p1
+%endif
 
 %build
 cp -f /usr/share/automake/config.* tools
