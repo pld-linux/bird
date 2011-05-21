@@ -2,7 +2,7 @@
 #
 # bird		Starts the Dynamic Route Daemon
 #
-# chkconfig:	345 80 45
+# chkconfig:	345 15 85
 #
 # description:	Dynamic Route Daemon for IPv6 routers
 #
@@ -39,7 +39,7 @@ case "$1" in
 	# Check if the services are already running?
 	if [ ! -f /var/lock/subsys/bird-ipv6 ]; then
 		msg_starting "bird for IPv6"
-		daemon ${SERVICE_RUN_NICE_LEVEL} bird
+		daemon ${SERVICE_RUN_NICE_LEVEL} /usr/sbin/bird-6
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/bird-ipv6
 	else
