@@ -188,7 +188,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/bird
 %attr(754,root,root) /etc/rc.d/init.d/bird-ipv4
-%attr(754,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv4
+%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv4
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird.conf
 %endif
 
@@ -197,7 +197,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/bird-6
 %attr(755,root,root) %{_sbindir}/birdc-6
-%attr(754,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv6
-%attr(754,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/rc.d/init.d/bird-ipv6
+%attr(754,root,root) /etc/rc.d/init.d/bird-ipv6
+%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv6
 #%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird-6.conf
 %endif
