@@ -9,18 +9,18 @@
 Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
-Version:	1.3.1
-Release:	3
+Version:	1.3.2
+Release:	1
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
-# Source0-md5:	d11f53b79c7371b76e5c93209dbe2a10
+# Source0-md5:	4fa1fc086799227fc823e15ece046951
 Source1:	%{name}-ipv4.init
 Source2:	%{name}-ipv4.sysconfig
 Source3:	%{name}-ipv6.init
 Source4:	%{name}-ipv6.sysconfig
 Source5:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
-# Source5-md5:	340be3f6c7ade302a0b4b34dd2773957
+# Source5-md5:	4c1cf73ccb2f52619e96c8bca4c466df
 Patch0:		%{name}-allowalien.patch
 URL:		http://bird.network.cz/
 BuildRequires:	autoconf
@@ -32,6 +32,8 @@ BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	bird-daemon
 Requires:	rc-scripts
+Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/usr/sbin/useradd
 Obsoletes:	gated
 Obsoletes:	mrt
 Obsoletes:	zebra
@@ -157,6 +159,16 @@ install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/%{name}-ipv6
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%pre
+%groupadd -g 271 bird
+%useradd -u 271 -d /usr/share/empty -s /bin/false -c "bird routing daemon" -g bird bird
+
+%postun
+if [ "$1" = "0" ]; then
+	%userremove bird
+	%groupremove bird
+fi
 
 %post ipv4
 /sbin/chkconfig --add %{name}-ipv4

@@ -39,7 +39,7 @@ case "$1" in
 	# Check if the services are already running?
 	if [ ! -f /var/lock/subsys/bird-ipv4 ]; then
 		msg_starting "bird for IPv4"
-		daemon ${SERVICE_RUN_NICE_LEVEL} /usr/sbin/bird
+		daemon ${SERVICE_RUN_NICE_LEVEL} /usr/sbin/bird -u bird -g bird
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/bird-ipv4
 	else
