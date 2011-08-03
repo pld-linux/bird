@@ -49,7 +49,7 @@ case "$1" in
   stop)
 	if [ -f /var/lock/subsys/bird-ipv6 ]; then
  		msg_stopping "bird for IPv6"
-		killproc bird
+		killproc bird-6
 		rm -f /var/lock/subsys/bird-ipv6
 	else
 		msg_not_running "bird for IPv6"
@@ -58,7 +58,7 @@ case "$1" in
   reload|force-reload)
 	if [ -f /var/lock/subsys/bird-ipv6 ]; then
  		msg_reloading "bird for IPv6"
-		killproc bird -HUP
+		killproc bird-6 -HUP
 		RETVAL=$?
 	else
 		msg_not_running "bird for IPv6"
@@ -66,7 +66,7 @@ case "$1" in
 	fi
 	;;
   status)
-	status bird-ipv6 bird
+	status bird-ipv6 bird-6
 	exit $?
 	;;
   restart|force-reload)
