@@ -6,7 +6,7 @@
 #
 # description:	Dynamic Route Daemon for IPv4 routers
 #
-# processname:	bird-ipv4
+# processname:	bird
 # config:	/etc/bird.conf
 
 

@@ -140,7 +140,7 @@ install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,/etc/sysconfig,%{_sbindir}}
 
 install birdc $RPM_BUILD_ROOT%{_sbindir}
 
-%if %{with ipv6}
+%if %{with ipv4}
 install bird $RPM_BUILD_ROOT%{_sbindir}
 install doc/bird.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-ipv4

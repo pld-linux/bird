@@ -6,7 +6,7 @@
 #
 # description:	Dynamic Route Daemon for IPv6 routers
 #
-# processname:	bird-ipv6
+# processname:	bird-6
 # config:	/etc/bird.conf
 
 
