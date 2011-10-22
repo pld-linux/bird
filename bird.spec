@@ -10,7 +10,7 @@ Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
 Version:	1.3.4
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
@@ -201,7 +201,7 @@ fi
 %attr(755,root,root) %{_sbindir}/bird
 %attr(754,root,root) /etc/rc.d/init.d/bird-ipv4
 %attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv4
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird.conf
+%attr(640,root,bird) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird.conf
 %endif
 
 %if %{with ipv6}
@@ -211,5 +211,5 @@ fi
 %attr(755,root,root) %{_sbindir}/birdc-6
 %attr(754,root,root) /etc/rc.d/init.d/bird-ipv6
 %attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv6
-#%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird-6.conf
+#%attr(640,root,bird) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird-6.conf
 %endif
