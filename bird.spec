@@ -190,7 +190,7 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del %{name}-ipv6
 fi
 
-%triggerpostun ipv4 -- bird-ipv4 < 1.3.4-3
+%triggerpostun ipv4 -- %{name}-ipv4 < 1.3.4-3
 chown 0640 /etc/bird.conf
 chgrp bird /etc/bird.conf
 
