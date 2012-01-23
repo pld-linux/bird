@@ -10,7 +10,7 @@ Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
 Version:	1.3.6
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
@@ -191,7 +191,7 @@ if [ "$1" = "0" ]; then
 fi
 
 %triggerpostun ipv4 -- %{name}-ipv4 < 1.3.4-3
-chown 0640 /etc/bird.conf
+chmod 0640 /etc/bird.conf
 chgrp bird /etc/bird.conf
 
 %files
