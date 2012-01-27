@@ -153,6 +153,7 @@ cat <<EOF > $RPM_BUILD_ROOT%{_sbindir}/birdc-6
 #!/bin/sh
 exec %{_sbindir}/birdc -s /var/run/bird6.ctl
 EOF
+:> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}6.conf
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-ipv6
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/%{name}-ipv6
 %endif
@@ -215,5 +216,5 @@ chgrp bird /etc/bird.conf
 %attr(755,root,root) %{_sbindir}/birdc-6
 %attr(754,root,root) /etc/rc.d/init.d/bird-ipv6
 %attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv6
-#%attr(640,root,bird) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird-6.conf
+%attr(640,root,bird) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird6.conf
 %endif
