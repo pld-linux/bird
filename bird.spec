@@ -9,18 +9,18 @@
 Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
-Version:	1.4.2
+Version:	1.4.3
 Release:	1
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
-# Source0-md5:	127c154a5a000fa5658ee1c53c44ab68
+# Source0-md5:	eb7e00b9c1d102ddfcbc19d9cb168511
 Source1:	%{name}-ipv4.init
 Source2:	%{name}-ipv4.sysconfig
 Source3:	%{name}-ipv6.init
 Source4:	%{name}-ipv6.sysconfig
 Source5:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
-# Source5-md5:	eedd6bb2d327dc7155755015c4d7b7d4
+# Source5-md5:	184744368fc6e2e4176e45aa1f674aef
 Patch0:		%{name}-allowalien.patch
 URL:		http://bird.network.cz/
 BuildRequires:	autoconf
