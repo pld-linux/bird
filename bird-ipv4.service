@@ -1,0 +1,12 @@
+[Unit]
+Description=BIRD Internet Routing Daemon for IPv4
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/bird -u bird -g bird
+ExecReload=/usr/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+Alias=bird.service

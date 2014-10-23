@@ -10,7 +10,7 @@ Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
 Version:	1.4.5
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
@@ -21,6 +21,8 @@ Source3:	%{name}-ipv6.init
 Source4:	%{name}-ipv6.sysconfig
 Source5:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
 # Source5-md5:	cdb4b36f35fed407ddb6f2c8e93ddd91
+Source6:	%{name}-ipv4.service
+Source7:	%{name}-ipv6.service
 Patch0:		%{name}-allowalien.patch
 URL:		http://bird.network.cz/
 BuildRequires:	autoconf
@@ -136,7 +138,8 @@ mv bird bird-6
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,/etc/sysconfig,%{_sbindir}}
+install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,/etc/sysconfig,%{_sbindir}} \
+	$RPM_BUILD_ROOT%{systemdunitdir}
 
 install birdc $RPM_BUILD_ROOT%{_sbindir}
 
@@ -145,6 +148,7 @@ install bird $RPM_BUILD_ROOT%{_sbindir}
 install doc/bird.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-ipv4
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}-ipv4
+install %{SOURCE6} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-ipv4.service
 %endif
 
 %if %{with ipv6}
@@ -156,6 +160,7 @@ EOF
 :> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}6.conf
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-ipv6
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/%{name}-ipv6
+install %{SOURCE7} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-ipv6.service
 %endif
 
 %clean
@@ -174,26 +179,42 @@ fi
 %post ipv4
 /sbin/chkconfig --add %{name}-ipv4
 %service %{name}-ipv4 restart "routing daemon"
+%systemd_post %{name}-ipv4.service
 
 %preun ipv4
 if [ "$1" = "0" ]; then
 	%service %{name}-ipv4 stop
 	/sbin/chkconfig --del %{name}-ipv4
 fi
+%systemd_preun %{name}-ipv4.service
+
+%postun ipv4
+%systemd_reload
 
 %post ipv6
 /sbin/chkconfig --add %{name}-ipv6
 %service %{name}-ipv6 restart "routing daemon"
+%systemd_post %{name}-ipv6.service
 
 %preun ipv6
 if [ "$1" = "0" ]; then
 	%service %{name}-ipv6 stop
 	/sbin/chkconfig --del %{name}-ipv6
 fi
+%systemd_preun %{name}-ipv6.service
+
+%postun ipv6
+%systemd_reload
 
 %triggerpostun ipv4 -- %{name}-ipv4 < 1.3.4-3
 chmod 0640 /etc/bird.conf
 chgrp bird /etc/bird.conf
+
+%triggerpostun -- %{name}-ipv4 < 1.4.5-2
+%systemd_trigger %{name}-ipv4.service
+
+%triggerpostun -- %{name}-ipv6 < 1.4.5-2
+%systemd_trigger %{name}-ipv6.service
 
 %files
 %defattr(644,root,root,755)
@@ -207,6 +228,7 @@ chgrp bird /etc/bird.conf
 %attr(754,root,root) /etc/rc.d/init.d/bird-ipv4
 %attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv4
 %attr(640,root,bird) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird.conf
+%{systemdunitdir}/%{name}-ipv4.service
 %endif
 
 %if %{with ipv6}
@@ -217,4 +239,5 @@ chgrp bird /etc/bird.conf
 %attr(754,root,root) /etc/rc.d/init.d/bird-ipv6
 %attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv6
 %attr(640,root,bird) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird6.conf
+%{systemdunitdir}/%{name}-ipv6.service
 %endif
