@@ -2,3 +2,6 @@
 
 # Define nice level for bird
 SERVICE_RUN_NICE_LEVEL="+5"
+
+# Additional options
+#BIRD_OPTS="-R"

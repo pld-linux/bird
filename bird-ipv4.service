@@ -4,7 +4,8 @@ After=network.target
 
 [Service]
 Type=forking
-ExecStart=/usr/sbin/bird -u bird -g bird
+EnvironmentFile=/etc/sysconfig/bird-ipv4
+ExecStart=/usr/sbin/bird -u bird -g bird $BIRD_OPTS
 ExecReload=/usr/bin/kill -HUP $MAINPID
 
 [Install]
