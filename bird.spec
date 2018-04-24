@@ -9,18 +9,18 @@
 Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
-Version:	1.6.2
-Release:	2
+Version:	1.6.4
+Release:	1
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
-# Source0-md5:	36bc84db93ae7a2fe10194075331e1b9
+# Source0-md5:	d62ec2547338e8d3dfb934b4c7b2faa4
 Source1:	%{name}-ipv4.init
 Source2:	%{name}-ipv4.sysconfig
 Source3:	%{name}-ipv6.init
 Source4:	%{name}-ipv6.sysconfig
 Source5:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
-# Source5-md5:	cf68d4b2b249e66ce1841fc757c8809b
+# Source5-md5:	0e09c17eaadd2f734720a3b67523d440
 Source6:	%{name}-ipv4.service
 Source7:	%{name}-ipv6.service
 Patch0:		%{name}-allowalien.patch
@@ -218,7 +218,7 @@ chgrp bird /etc/bird.conf
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.html doc/reply_codes %{name}-doc-%{version}/doc/*.ps ChangeLog NEWS README TODO
+%doc doc/*.html doc/reply_codes %{name}-doc-%{version}/doc/*.pdf ChangeLog NEWS README 
 %attr(755,root,root) %{_sbindir}/birdc
 
 %if %{with ipv4}
