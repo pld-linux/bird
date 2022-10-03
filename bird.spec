@@ -13,19 +13,19 @@ Version:	1.6.8
 Release:	1
 License:	GPL v2+
 Group:		Networking/Daemons
-Source0:	ftp://bird.network.cz/pub/bird/%{name}-%{version}.tar.gz
+Source0:	https://bird.network.cz/download/%{name}-%{version}.tar.gz
 # Source0-md5:	abe29a927e21a3d7f8092641f06093c2
 Source1:	%{name}-ipv4.init
 Source2:	%{name}-ipv4.sysconfig
 Source3:	%{name}-ipv6.init
 Source4:	%{name}-ipv6.sysconfig
-Source5:	ftp://bird.network.cz/pub/bird/%{name}-doc-%{version}.tar.gz
+Source5:	https://bird.network.cz/download/%{name}-doc-%{version}.tar.gz
 # Source5-md5:	d5b69caeee629479e0261aba18d35758
 Source6:	%{name}-ipv4.service
 Source7:	%{name}-ipv6.service
 Patch0:		%{name}-allowalien.patch
 Patch1:		gcc.patch
-URL:		http://bird.network.cz/
+URL:		https://bird.network.cz/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
