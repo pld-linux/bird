@@ -110,7 +110,7 @@ filtrów o dużych możliwościach.
 %prep
 %setup -q -a 5
 %{?with_alien:%patch0 -p1}
-%patch1 -p1
+%patch -P1 -p1
 
 %build
 cp -f /usr/share/automake/config.* tools
