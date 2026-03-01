@@ -2,15 +2,15 @@
 #	- trigger to clean up after old bird package (stop, chkconfig --del)
 #
 # Conditional build:
-%bcond_without	ipv6	# disable IPv6 support (and building bird-ipv6 package)
-%bcond_without	ipv4	# disable IPv4 support (and building bird-ipv4 package)
+%bcond_without	ipv6	# IPv6 support (and building bird-ipv6 package)
+%bcond_without	ipv4	# IPv4 support (and building bird-ipv4 package)
 %bcond_with	alien	# enable possibility to import 'alien' routes import into bird's routing table
 #
 Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
 Version:	1.6.8
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	https://bird.network.cz/download/%{name}-%{version}.tar.gz
@@ -37,6 +37,8 @@ Requires:	bird-daemon
 Requires:	rc-scripts
 Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/usr/sbin/useradd
+Provides:	group(bird)
+Provides:	user(bird)
 Obsoletes:	gated
 Obsoletes:	mrt
 Obsoletes:	zebra
@@ -125,7 +127,7 @@ export CFLAGS="%{rpmcflags} -I%{_includedir}/ncursesw -fno-strict-aliasing -fno-
 	--enable-ipv6
 %{__make} -j1
 
-mv bird bird-6
+%{__mv} bird bird-6
 
 %{__make} clean
 %endif
