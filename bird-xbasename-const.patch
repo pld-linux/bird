@@ -1,0 +1,13 @@
+--- a/lib/string.h
++++ b/lib/string.h
+@@ -47,8 +47,8 @@ int patmatch(const byte *pat, const byte *str);
+
+ static inline char *xbasename(const char *str)
+ {
+-  char *s = strrchr(str, '/');
+-  return s ? s+1 : (char *) str;
++  const char *s = strrchr(str, '/');
++  return (char *) (s ? s+1 : str);
+ }
+
+ static inline char *

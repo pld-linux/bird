@@ -1,43 +1,38 @@
-# TODO:
-#	- trigger to clean up after old bird package (stop, chkconfig --del)
-#
 # Conditional build:
-%bcond_without	ipv6	# IPv6 support (and building bird-ipv6 package)
-%bcond_without	ipv4	# IPv4 support (and building bird-ipv4 package)
-%bcond_with	alien	# enable possibility to import 'alien' routes import into bird's routing table
+%bcond_without	libssh	# RPKI SSH transport support
 #
 Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
-Version:	1.6.8
-Release:	3
+Version:	3.2.0
+Release:	1
 License:	GPL v2+
 Group:		Networking/Daemons
-Source0:	https://bird.network.cz/download/%{name}-%{version}.tar.gz
-# Source0-md5:	abe29a927e21a3d7f8092641f06093c2
-Source1:	%{name}-ipv4.init
-Source2:	%{name}-ipv4.sysconfig
-Source3:	%{name}-ipv6.init
-Source4:	%{name}-ipv6.sysconfig
-Source5:	https://bird.network.cz/download/%{name}-doc-%{version}.tar.gz
-# Source5-md5:	d5b69caeee629479e0261aba18d35758
-Source6:	%{name}-ipv4.service
-Source7:	%{name}-ipv6.service
-Patch0:		%{name}-allowalien.patch
-Patch1:		gcc.patch
-URL:		https://bird.network.cz/
+Source0:	https://bird.nic.cz/download/%{name}-%{version}.tar.gz
+# Source0-md5:	96c1da55667ca6c08b4d41ecfb871efc
+Source1:	%{name}.init
+Source2:	%{name}.sysconfig
+Source3:	https://bird.nic.cz/download/%{name}-doc-%{version}.tar.gz
+# Source3-md5:	77fd807bdd8ff4369fe7653b5b6a7137
+Source4:	%{name}.service
+Source5:	%{name}.tmpfiles
+Patch0:		%{name}-xbasename-const.patch
+URL:		https://bird.nic.cz/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
-BuildRequires:	readline-devel >= 4.2
+%{?with_libssh:BuildRequires:	libssh-devel}
+BuildRequires:	ncurses-devel
+BuildRequires:	readline-devel >= 6.0
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
-Requires:	bird-daemon
 Requires:	rc-scripts
 Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/usr/sbin/useradd
+Provides:	bird-daemon
 Provides:	group(bird)
+Provides:	routingdaemon
 Provides:	user(bird)
 Obsoletes:	gated
 Obsoletes:	mrt
@@ -57,115 +52,34 @@ pracującego na systemach UNIX z pełnym wsparciem dla nowoczesnych
 protokołów routingu, łatwym interfejsem konfiguracji i językiem
 filtrów o dużych możliwościach.
 
-%package ipv4
-Summary:	Routing daemon for IPv4
-Summary(pl.UTF-8):	Demon dynamicznego routingu IPv4
-Group:		Networking/Daemons
-Requires(post,preun):	/sbin/chkconfig
-Requires:	%{name} = %{version}-%{release}
-Requires:	rc-scripts
-Provides:	bird-daemon
-Provides:	routingdaemon
-Obsoletes:	gated
-Obsoletes:	mrt
-Obsoletes:	zebra
-Obsoletes:	zebra-guile
-
-%description ipv4
-The BIRD project is an attempt to create a routing daemon running on
-UNIX-like systems (but not necessarily limited to them) with full
-support of all modern routing protocols, easy to use configuration
-interface and powerful route filtering language.
-
-%description ipv4 -l pl.UTF-8
-Projekt BIRD ma na celu utworzenie daemona dynamicznego routingu
-pracującego na systemach UNIX z pełnym wsparciem dla nowoczesnych
-protokołów routingu, łatwym interfejsem konfiguracji i językiem
-filtrów o dużych możliwościach.
-
-%package ipv6
-Summary:	Routing daemon for IPv6
-Summary(pl.UTF-8):	Demon dynamicznego routingu IPv6
-Group:		Networking/Daemons
-Requires(post,preun):	/sbin/chkconfig
-Requires:	%{name} = %{version}-%{release}
-Requires:	rc-scripts
-Provides:	bird-daemon
-Provides:	routingdaemon
-Obsoletes:	gated
-Obsoletes:	mrt
-Obsoletes:	zebra
-Obsoletes:	zebra-guile
-
-%description ipv6
-The BIRD project is an attempt to create a routing daemon running on
-UNIX-like systems (but not necessarily limited to them) with full
-support of all modern routing protocols, easy to use configuration
-interface and powerful route filtering language.
-
-%description ipv6 -l pl.UTF-8
-Projekt BIRD ma na celu utworzenie daemona dynamicznego routingu
-pracującego na systemach UNIX z pełnym wsparciem dla nowoczesnych
-protokołów routingu, łatwym interfejsem konfiguracji i językiem
-filtrów o dużych możliwościach.
-
 %prep
-%setup -q -a 5
-%{?with_alien:%patch0 -p1}
-%patch -P1 -p1
+%setup -q -a 3
+%patch -P0 -p1
 
 %build
 cp -f /usr/share/automake/config.* tools
 %{__autoconf}
 
-export CFLAGS="%{rpmcflags} -I%{_includedir}/ncursesw -fno-strict-aliasing -fno-strict-overflow"
-
-%if %{with ipv6}
 %configure \
-	--disable-memcheck \
+	--runstatedir=/var/run/bird \
 	--enable-client \
-	--enable-ipv6
-%{__make} -j1
+	%{?with_libssh:--enable-libssh}%{!?with_libssh:--disable-libssh}
 
-%{__mv} bird bird-6
-
-%{__make} clean
-%endif
-
-%if %{with ipv4}
-%configure \
-	--disable-memcheck \
-	--enable-client \
-	--disable-ipv6
-%{__make} -j1
-%endif
+%{__make} VERBOSE=1
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,/etc/sysconfig,%{_sbindir}} \
-	$RPM_BUILD_ROOT%{systemdunitdir}
+	$RPM_BUILD_ROOT{%{systemdunitdir},%{systemdtmpfilesdir}}
 
-install birdc $RPM_BUILD_ROOT%{_sbindir}
-
-%if %{with ipv4}
 install bird $RPM_BUILD_ROOT%{_sbindir}
+install birdc $RPM_BUILD_ROOT%{_sbindir}
+install birdcl $RPM_BUILD_ROOT%{_sbindir}
 install doc/bird.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-ipv4
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}-ipv4
-install %{SOURCE6} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-ipv4.service
-%endif
-
-%if %{with ipv6}
-install bird-6 $RPM_BUILD_ROOT%{_sbindir}
-cat <<EOF > $RPM_BUILD_ROOT%{_sbindir}/birdc-6
-#!/bin/sh
-exec %{_sbindir}/birdc -s /var/run/bird6.ctl
-EOF
-:> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}6.conf
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}-ipv6
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/%{name}-ipv6
-install %{SOURCE7} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}-ipv6.service
-%endif
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
+install %{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}/%{name}.service
+install %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -174,74 +88,35 @@ rm -rf $RPM_BUILD_ROOT
 %groupadd -g 271 bird
 %useradd -u 271 -d /usr/share/empty -s /bin/false -c "bird routing daemon" -g bird bird
 
+%post
+/sbin/chkconfig --add bird
+%service bird restart "routing daemon"
+%systemd_post bird.service
+
+%preun
+if [ "$1" = "0" ]; then
+	%service bird stop
+	/sbin/chkconfig --del bird
+fi
+%systemd_preun bird.service
+
 %postun
 if [ "$1" = "0" ]; then
 	%userremove bird
 	%groupremove bird
 fi
-
-%post ipv4
-/sbin/chkconfig --add %{name}-ipv4
-%service %{name}-ipv4 restart "routing daemon"
-%systemd_post %{name}-ipv4.service
-
-%preun ipv4
-if [ "$1" = "0" ]; then
-	%service %{name}-ipv4 stop
-	/sbin/chkconfig --del %{name}-ipv4
-fi
-%systemd_preun %{name}-ipv4.service
-
-%postun ipv4
 %systemd_reload
-
-%post ipv6
-/sbin/chkconfig --add %{name}-ipv6
-%service %{name}-ipv6 restart "routing daemon"
-%systemd_post %{name}-ipv6.service
-
-%preun ipv6
-if [ "$1" = "0" ]; then
-	%service %{name}-ipv6 stop
-	/sbin/chkconfig --del %{name}-ipv6
-fi
-%systemd_preun %{name}-ipv6.service
-
-%postun ipv6
-%systemd_reload
-
-%triggerpostun ipv4 -- %{name}-ipv4 < 1.3.4-3
-chmod 0640 /etc/bird.conf
-chgrp bird /etc/bird.conf
-
-%triggerpostun -- %{name}-ipv4 < 1.4.5-2
-%systemd_trigger %{name}-ipv4.service
-
-%triggerpostun -- %{name}-ipv6 < 1.4.5-2
-%systemd_trigger %{name}-ipv6.service
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.html doc/reply_codes %{name}-doc-%{version}/doc/*.pdf ChangeLog NEWS README 
-%attr(755,root,root) %{_sbindir}/birdc
-
-%if %{with ipv4}
-%files ipv4
-%defattr(644,root,root,755)
+%doc doc/reply_codes ChangeLog NEWS README
+%doc %{name}-doc-%{version}/doc/*.html
+%doc %{name}-doc-%{version}/doc/*.pdf
 %attr(755,root,root) %{_sbindir}/bird
-%attr(754,root,root) /etc/rc.d/init.d/bird-ipv4
-%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv4
+%attr(755,root,root) %{_sbindir}/birdc
+%attr(755,root,root) %{_sbindir}/birdcl
+%attr(754,root,root) /etc/rc.d/init.d/bird
+%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird
 %attr(640,root,bird) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird.conf
-%{systemdunitdir}/%{name}-ipv4.service
-%endif
-
-%if %{with ipv6}
-%files ipv6
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/bird-6
-%attr(755,root,root) %{_sbindir}/birdc-6
-%attr(754,root,root) /etc/rc.d/init.d/bird-ipv6
-%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird-ipv6
-%attr(640,root,bird) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird6.conf
-%{systemdunitdir}/%{name}-ipv6.service
-%endif
+%{systemdunitdir}/bird.service
+%{systemdtmpfilesdir}/bird.conf

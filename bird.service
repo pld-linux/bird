@@ -1,0 +1,15 @@
+[Unit]
+Description=BIRD Internet Routing Daemon
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/sysconfig/bird
+RuntimeDirectory=bird
+ExecStartPre=/usr/sbin/bird -p
+ExecStart=/usr/sbin/bird -f -u bird -g bird $BIRD_OPTS
+ExecReload=/usr/sbin/birdc configure
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
