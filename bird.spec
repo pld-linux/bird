@@ -1,11 +1,12 @@
 # Conditional build:
 %bcond_without	libssh	# RPKI SSH transport support
+%bcond_without	tests	# unit tests
 #
 Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
 Version:	3.2.0
-Release:	1.1
+Release:	2
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	https://bird.nic.cz/download/%{name}-%{version}.tar.gz
@@ -17,6 +18,7 @@ Source3:	https://bird.nic.cz/download/%{name}-doc-%{version}.tar.gz
 Source4:	%{name}.service
 Source5:	%{name}.tmpfiles
 Patch0:		%{name}-xbasename-const.patch
+# check on releases > 3.2.- how this got fixed
 Patch1:		%{name}-krt-gr-export-fix.patch
 URL:		https://bird.nic.cz/
 BuildRequires:	autoconf
@@ -68,6 +70,10 @@ cp -f /usr/share/automake/config.* tools
 	%{?with_libssh:--enable-libssh}%{!?with_libssh:--disable-libssh}
 
 %{__make} VERBOSE=1
+
+%if %{with tests}
+%{__make} check
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
