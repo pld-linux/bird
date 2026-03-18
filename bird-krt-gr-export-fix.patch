@@ -1,0 +1,32 @@
+Kernel: skip export start in krt_init_scan() when gr_wait is set
+
+When graceful restart recovery is active (-R), krt_start() sets gr_wait=1
+on the kernel channel to defer export until recovery completes (via
+graceful_recovery_done()). However, krt_init_scan() unconditionally calls
+channel_start_export() when transitioning from KPS_INIT, without checking
+gr_wait. When graceful_recovery_done() later runs, it finds gr_wait=1 and
+tries to start the export again, triggering:
+
+  bug("%s.%s: Attempted to start channel's already started export")
+
+Reported on bird-users by Christoph (Jan 2026) for BIRD 3.1.5.
+Still present in 3.2.0 despite bda2178e ("Kernel: pause exports also
+on restart until scan is done") which set rt_notify=NULL in krt_start()
+but didn't address the krt_init_scan() path.
+
+Skip channel_start_export() in krt_init_scan() when gr_wait is set,
+letting graceful_recovery_done() handle it instead.
+
+--- a/sysdep/unix/krt.c
++++ b/sysdep/unix/krt.c
+@@ -449,7 +449,9 @@ krt_init_scan(struct krt_proto *p)
+     case KPS_INIT:
+       /* Allow exports now */
+       p->p.rt_notify = krt_rt_notify;
+-      channel_start_export(p->p.main_channel);
++      /* When gr_wait is set, graceful_recovery_done() will start the export */
++      if (!p->p.main_channel->gr_wait)
++	channel_start_export(p->p.main_channel);
+       rt_refresh_begin(&p->p.main_channel->in_req);
+       p->sync_state = KPS_FIRST_SCAN;
+       return 1;
