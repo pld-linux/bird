@@ -3,5 +3,8 @@
 # Define nice level for bird
 SERVICE_RUN_NICE_LEVEL="+5"
 
-# Additional options (e.g. "-R" for graceful restart recovery)
+# Additional options
+# Enable graceful restart recovery with "-R": on restart, keep forwarding
+# on existing kernel routes until BGP sessions re-converge (harmless on
+# fresh boot). Requires graceful restart enabled in bird.conf.
 BIRD_OPTS=""
