@@ -44,7 +44,7 @@ case "$1" in
 	if [ ! -f /var/lock/subsys/bird ]; then
 		checkconfig
 		msg_starting bird
-		daemon ${SERVICE_RUN_NICE_LEVEL} /usr/sbin/bird -u bird -g bird $BIRD_OPTS
+		daemon ${SERVICE_RUN_NICE_LEVEL} /usr/sbin/bird -u bird -g bird -P /var/run/bird/bird.pid $BIRD_OPTS
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/bird
 	else
@@ -54,7 +54,7 @@ case "$1" in
   stop)
 	if [ -f /var/lock/subsys/bird ]; then
 		msg_stopping bird
-		killproc bird
+		killproc --pidfile /var/run/bird/bird.pid bird
 		rm -f /var/lock/subsys/bird
 	else
 		msg_not_running bird
@@ -70,7 +70,7 @@ case "$1" in
 	if [ -f /var/lock/subsys/bird ]; then
 		checkconfig
 		msg_reloading bird
-		killproc bird -HUP
+		killproc --pidfile /var/run/bird/bird.pid bird -HUP
 		RETVAL=$?
 	else
 		msg_not_running bird
@@ -81,7 +81,7 @@ case "$1" in
 	checkconfig
 	;;
   status)
-	status bird
+	status --pidfile /var/run/bird/bird.pid bird
 	exit $?
 	;;
   *)

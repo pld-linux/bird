@@ -6,7 +6,7 @@ Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
 Version:	3.2.0
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	https://bird.nic.cz/download/%{name}-%{version}.tar.gz
@@ -78,7 +78,8 @@ cp -f /usr/share/automake/config.* tools
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,/etc/sysconfig,%{_sbindir}} \
-	$RPM_BUILD_ROOT{%{systemdunitdir},%{systemdtmpfilesdir}}
+	$RPM_BUILD_ROOT{%{systemdunitdir},%{systemdtmpfilesdir}} \
+	$RPM_BUILD_ROOT/var/run/bird
 
 install bird $RPM_BUILD_ROOT%{_sbindir}
 install birdc $RPM_BUILD_ROOT%{_sbindir}
@@ -126,5 +127,6 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/bird
 %attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bird
 %attr(640,root,bird) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bird.conf
+%dir %attr(755,bird,bird) /var/run/bird
 %{systemdunitdir}/bird.service
 %{systemdtmpfilesdir}/bird.conf
