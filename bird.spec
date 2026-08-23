@@ -5,21 +5,19 @@
 Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
-Version:	3.2.0
-Release:	3
+Version:	3.3.2
+Release:	1
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	https://bird.nic.cz/download/%{name}-%{version}.tar.gz
-# Source0-md5:	96c1da55667ca6c08b4d41ecfb871efc
+# Source0-md5:	a9ca0d29e9531c0add78e7b3e5d41b3a
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	https://bird.nic.cz/download/%{name}-doc-%{version}.tar.gz
-# Source3-md5:	77fd807bdd8ff4369fe7653b5b6a7137
+# Source3-md5:	f40f463087208ca753276444c126e9b0
 Source4:	%{name}.service
 Source5:	%{name}.tmpfiles
 Patch0:		%{name}-xbasename-const.patch
-# check on releases > 3.2.- how this got fixed
-Patch1:		%{name}-krt-gr-export-fix.patch
 URL:		https://bird.nic.cz/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -31,7 +29,11 @@ BuildRequires:	readline-devel >= 6.0
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
+Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Provides:	bird-daemon
 Provides:	group(bird)
@@ -58,7 +60,6 @@ filtrów o dużych możliwościach.
 %prep
 %setup -q -a 3
 %patch -P0 -p1
-%patch -P1 -p1
 
 %build
 cp -f /usr/share/automake/config.* tools
