@@ -1,0 +1,30 @@
+From c341848ebe83f4dd007ae914b7c58028fac2e711 Mon Sep 17 00:00:00 2001
+From: Ondrej Zajicek <santiago@crfreenet.org>
+Date: Wed, 14 Oct 2026 00:40:07 +0200
+Subject: [PATCH] RPKI: Fix handling of ASPA PDUs with strange length
+
+Length of ASPA PDUs should be multiple of 4, round it down when it is not.
+
+Reported-By: Joshua Rogers (AISLE)
+Target: patch
+Issue: #492
+---
+ proto/rpki/packets.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/proto/rpki/packets.c b/proto/rpki/packets.c
+index 919b6005e..7782d1f4a 100644
+--- a/proto/rpki/packets.c
++++ b/proto/rpki/packets.c
+@@ -906,7 +906,7 @@ rpki_handle_aspa_pdu(struct rpki_cache *cache, const struct pdu_header *pdu)
+ {
+   struct pdu_aspa *aspa = (void *) pdu;
+   struct channel *channel = cache->p->aspa_channel;
+-  uint providers_length = aspa->len - sizeof(struct pdu_aspa);
++  uint providers_length = rpki_pdu_aspa_provider_asn_count(aspa) * sizeof(u32);
+ 
+   if (!channel)
+   {
+-- 
+GitLab
+

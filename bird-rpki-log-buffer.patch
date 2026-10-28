@@ -1,0 +1,37 @@
+From ca89e524de9fd2ef7a44232885196a750810d879 Mon Sep 17 00:00:00 2001
+From: Ondrej Zajicek <santiago@crfreenet.org>
+Date: Wed, 14 Oct 2026 01:13:17 +0200
+Subject: [PATCH] RPKI: Fix string buffer handling in rpki_log_packet()
+
+The first bsnprintf() should not use strlen() as the buffer is not
+initialized yet.
+
+Reported-By: Joshua Rogers (AISLE)
+Target: patch
+Issue: #492
+---
+ proto/rpki/packets.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/proto/rpki/packets.c b/proto/rpki/packets.c
+index 7782d1f4a..909f10db5 100644
+--- a/proto/rpki/packets.c
++++ b/proto/rpki/packets.c
+@@ -537,12 +537,10 @@ rpki_log_packet(struct rpki_cache *cache, const struct pdu_header *pdu, const en
+     int provider_asn_count = rpki_pdu_aspa_provider_asn_count(aspa);
+ 
+     if (provider_asn_count <= 0)
+-      SAVE(bsnprintf(detail + strlen(detail), sizeof(detail) - strlen(detail),
+-	    "%u transit", aspa->customer_as_num));
++      SAVE(bsnprintf(detail, sizeof(detail), "%u", aspa->customer_as_num));
+     else
+     {
+-      SAVE(bsnprintf(detail + strlen(detail), sizeof(detail) - strlen(detail),
+-	    "%u (providers", aspa->customer_as_num));
++      SAVE(bsnprintf(detail, sizeof(detail), "%u (providers", aspa->customer_as_num));
+       for (int i = 0; i < provider_asn_count; i++)
+ 	SAVE(bsnprintf(detail + strlen(detail), sizeof(detail) - strlen(detail),
+ 	      " %u%c", aspa->provider_as_nums[i], (i == provider_asn_count-1) ? ')' : ','));
+-- 
+GitLab
+

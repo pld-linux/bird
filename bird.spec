@@ -5,19 +5,23 @@
 Summary:	The BIRD Internet Routing Daemon
 Summary(pl.UTF-8):	Demon BIRD Internetowego Routingu Dynamicznego
 Name:		bird
-Version:	3.3.2
+Version:	3.4.0
 Release:	1
 License:	GPL v2+
 Group:		Networking/Daemons
 Source0:	https://bird.nic.cz/download/%{name}-%{version}.tar.gz
-# Source0-md5:	a9ca0d29e9531c0add78e7b3e5d41b3a
+# Source0-md5:	e3c551c05909fd7d15a568ad9d5170c7
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	https://bird.nic.cz/download/%{name}-doc-%{version}.tar.gz
-# Source3-md5:	f40f463087208ca753276444c126e9b0
+# Source3-md5:	320569ee653f689d652764eabb4db4e6
 Source4:	%{name}.service
 Source5:	%{name}.tmpfiles
 Patch0:		%{name}-xbasename-const.patch
+Patch1:		CVE-2026-112112.patch
+Patch2:		%{name}-rpki-aspa-length.patch
+Patch3:		%{name}-rpki-log-buffer.patch
+Patch4:		%{name}-strtoul-test-overflow.patch
 URL:		https://bird.nic.cz/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -60,6 +64,10 @@ filtrów o dużych możliwościach.
 %prep
 %setup -q -a 3
 %patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
 
 %build
 cp -f /usr/share/automake/config.* tools
