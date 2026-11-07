@@ -1,0 +1,24 @@
+From 55f320a01dc6627c026c6bd995c78b45b0a2faab Mon Sep 17 00:00:00 2001
+From: Ondrej Zajicek <santiago@crfreenet.org>
+Date: Fri, 6 Nov 2026 19:56:40 +0100
+Subject: [PATCH] BGP: Fix endianess in version mismatch error notification
+
+Reported-By: Xinrun Li
+Target: patch
+---
+ proto/bgp/packets.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/proto/bgp/packets.c b/proto/bgp/packets.c
+index a52d739..9db0c10 100644
+--- a/proto/bgp/packets.c
++++ b/proto/bgp/packets.c
+@@ -916,7 +916,7 @@ bgp_rx_open(struct bgp_conn *conn, byte *pkt, uint len)
+   { bgp_error(conn, 1, 2, pkt+16, 2); return; }
+ 
+   if (pkt[19] != BGP_VERSION)
+-  { u16 val = BGP_VERSION; bgp_error(conn, 2, 1, (byte *) &val, 2); return; }
++  { u16 val = htons(BGP_VERSION); bgp_error(conn, 2, 1, (byte *) &val, 2); return; }
+ 
+   asn = get_u16(pkt+20);
+   hold = get_u16(pkt+22);

@@ -1,0 +1,93 @@
+From abab8b7ee7ecc5b5342786f8a449fc277ac4d252 Mon Sep 17 00:00:00 2001
+From: Erin Shepherd <erin.shepherd@e43.eu>
+Date: Wed, 4 Nov 2026 18:37:52 +0100
+Subject: [PATCH] BGP: Fix memory leaks of hostname capability
+
+The hostname capability is stored as a separate allocation owned by struct
+bgp_caps, but it was never freed, leaking memory in several situations:
+
+- A repeated hostname capability in a single OPEN message overwrote
+  caps->hostname without freeing the previous allocation.
+- The error path of bgp_read_capabilities() freed the caps structure but
+  not its hostname.
+- bgp_close_conn() freed both local_caps and remote_caps without their
+  hostname fields. Note that local_caps also owns a hostname allocation
+  when 'advertise hostname' is enabled.
+
+Add a bgp_free_capabilities() helper that frees the hostname together with
+the caps structure and use it on all these paths. The helper is NULL-safe,
+as bgp_close_conn() may be called before capabilities are allocated.
+
+Target: patch
+---
+ proto/bgp/bgp.c     |  4 ++--
+ proto/bgp/bgp.h     |  1 +
+ proto/bgp/packets.c | 13 ++++++++++++-
+ 3 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/proto/bgp/bgp.c b/proto/bgp/bgp.c
+index 087161b..94d6c14 100644
+--- a/proto/bgp/bgp.c
++++ b/proto/bgp/bgp.c
+@@ -1137,9 +1137,9 @@ bgp_close_conn(struct bgp_conn *conn)
+ 
+   proto_announce_state_later(&conn->bgp->p, pes);
+ 
+-  mb_free(conn->local_caps);
++  bgp_free_capabilities(conn->local_caps);
+   conn->local_caps = NULL;
+-  mb_free(conn->remote_caps);
++  bgp_free_capabilities(conn->remote_caps);
+   conn->remote_caps = NULL;
+ 
+   mb_free(conn->notify_data);
+diff --git a/proto/bgp/bgp.h b/proto/bgp/bgp.h
+index 5df3d05..fa8d6f3 100644
+--- a/proto/bgp/bgp.h
++++ b/proto/bgp/bgp.h
+@@ -884,6 +884,7 @@ struct ea_class *bgp_find_ea_class_by_id(uint id);
+ 
+ void bgp_dump_state_change(struct bgp_conn *conn, uint old, uint new);
+ void bgp_prepare_capabilities(struct bgp_conn *conn);
++void bgp_free_capabilities(struct bgp_caps *caps);
+ int bgp_check_capabilities(struct bgp_conn *conn);
+ const struct bgp_af_desc *bgp_get_af_desc(u32 afi);
+ const struct bgp_af_caps *bgp_find_af_caps(struct bgp_caps *caps, u32 afi);
+diff --git a/proto/bgp/packets.c b/proto/bgp/packets.c
+index e9d32fe..a52d739 100644
+--- a/proto/bgp/packets.c
++++ b/proto/bgp/packets.c
+@@ -245,6 +245,16 @@ bgp_alloc_capabilities(struct bgp_proto *p, int n)
+   return caps;
+ }
+ 
++void
++bgp_free_capabilities(struct bgp_caps *caps)
++{
++  if (!caps)
++    return;
++
++  mb_free((void *) caps->hostname);
++  mb_free(caps);
++}
++
+ void
+ bgp_prepare_capabilities(struct bgp_conn *conn)
+ {
+@@ -666,6 +676,7 @@ bgp_read_capabilities(struct bgp_conn *conn, byte *pos, int len)
+         if (hostname[i] < ' ')
+           hostname[i] = ' ';
+ 
++      mb_free((void *) caps->hostname);
+       caps->hostname = hostname;
+ 
+       /* We can safely ignore all other capabilities */
+@@ -691,7 +702,7 @@ bgp_read_capabilities(struct bgp_conn *conn, byte *pos, int len)
+   return 0;
+ 
+ err:
+-  mb_free(caps);
++  bgp_free_capabilities(caps);
+   bgp_error(conn, 2, err_subcode, NULL, 0);
+   return -1;
+ }

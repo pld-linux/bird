@@ -1,0 +1,41 @@
+From f81b848ca8c6c5cdf925c2e8b23d35c1f2ddee52 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Arkadiusz=20Mi=C5=9Bkiewicz?= <arekm@maven.pl>
+Date: Sun, 8 Nov 2026 00:21:41 +0100
+Subject: [PATCH] IO: Fix off-by-one heap overflow in socket_changed()
+
+The sockets_info buffer is sized loop->sock_num * sk_max_dump_len + 17,
+which leaves no room for the NUL after the 17-char "%p " prefix. When
+the last socket of a loop is removed, buffer_print() truncates, sets
+buf.pos to buf.end and the final NUL is written one byte past the
+allocation (AddressSanitizer: heap-buffer-overflow in socket_changed()
+on every BGP connection close).
+---
+ sysdep/unix/io-loop.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sysdep/unix/io-loop.c b/sysdep/unix/io-loop.c
+index 5d92613..1745063 100644
+--- a/sysdep/unix/io-loop.c
++++ b/sysdep/unix/io-loop.c
+@@ -404,7 +404,8 @@ socket_changed(struct birdsock *s, bool recalculate_sk_info)
+ 
+   if (loop != &main_birdloop && recalculate_sk_info)
+   {
+-    int size = loop->sock_num * sk_max_dump_len + 17;
++    /* "%p " is up to 17 chars, plus the terminating NUL */
++    int size = loop->sock_num * sk_max_dump_len + 18;
+     char *new_info = mb_alloc(loop->pool, size);
+ 
+     node *n;
+@@ -421,7 +422,10 @@ socket_changed(struct birdsock *s, bool recalculate_sk_info)
+       SKIP_BACK_DECLARE(sock, s, n, n);
+       sk_dump_to_buffer(&buf, s);
+     }
+-    buf.pos[0] = '\0';
++
++    /* buffer_print() leaves pos == end on truncation */
++    if (buf.pos < buf.end)
++      buf.pos[0] = 0;
+ 
+     char *old_info = NULL;
+     if (loop->sockets_info)

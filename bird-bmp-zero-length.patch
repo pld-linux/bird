@@ -1,0 +1,24 @@
+From 45744a2939606ac9bd319b8b5f4d22779c35877d Mon Sep 17 00:00:00 2001
+From: Ondrej Zajicek <santiago@crfreenet.org>
+Date: Fri, 6 Nov 2026 19:48:26 +0100
+Subject: [PATCH] BMP: Handle zero-length data properly
+
+Reported-By: Xinrun Li
+Target: patch
+---
+ proto/bmp/bmp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/proto/bmp/bmp.c b/proto/bmp/bmp.c
+index 22eaf14..8776497 100644
+--- a/proto/bmp/bmp.c
++++ b/proto/bmp/bmp.c
+@@ -189,7 +189,7 @@ static inline void
+ bmp_put_data(buffer *b, const void *src, const size_t len)
+ {
+   ASSERT_DIE(b->pos + len <= b->end);
+-  memcpy(b->pos, src, len);
++  bmemcpy(b->pos, src, len);
+   b->pos += len;
+ }
+ 

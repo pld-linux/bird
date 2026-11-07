@@ -1,0 +1,43 @@
+From cad13a8b4211fd43eeb6e06df6cf74d0607552b0 Mon Sep 17 00:00:00 2001
+From: Ondrej Zajicek <santiago@crfreenet.org>
+Date: Sat, 7 Nov 2026 16:56:26 +0100
+Subject: [PATCH] Nest: Fix over-read in ea_list_copy()
+
+ADATA_SIZE() returns aligned adata size, while source data length does
+not necessary contain alignment. This is already fixed in v2, but was
+somehow mismerged to v3.
+
+Note that cached ea_list alignment is confusing in v3. The code enforces
+CPU_STRUCT_ALIGN alignment, but the adata header is 4 bytes, therefore
+adata body is CPU_STRUCT_ALIGN aligned with 4B offset, and the whole
+structure is copied in ea_alloc_storage() to position with 24B offset.
+
+One would expect that adata bodies assume 4B alignment like in BIRD v2,
+but in struct nexthop_adata there is implicit padding before nexthop
+structure to enforce 8B alignment.
+
+Reported-By: Sebastien Wenske <sebastien@wenske.fr>
+Target: patch
+---
+ nest/rt-attr.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/nest/rt-attr.c b/nest/rt-attr.c
+index 1a6d0d8..05591fb 100644
+--- a/nest/rt-attr.c
++++ b/nest/rt-attr.c
+@@ -1235,11 +1235,12 @@ ea_list_copy(ea_list *n, ea_list *o, uint elen)
+       eattr *a = &n->attrs[i];
+       if (!a->undef && !(a->type & EAF_EMBEDDED))
+ 	{
+-	  unsigned size = ADATA_SIZE(a->u.ptr->length);
++	  uint size_u = sizeof(struct adata) + a->u.ptr->length;
++	  uint size = ADATA_SIZE(a->u.ptr->length);
+ 	  ASSERT_DIE(adpos + size <= elen);
+ 
+ 	  struct adata *d = ((void *) n) + adpos;
+-	  memcpy(d, a->u.ptr, size);
++	  memcpy(d, a->u.ptr, size_u);
+ 	  a->u.ptr = d;
+ 
+ 	  adpos += size;

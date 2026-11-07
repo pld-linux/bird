@@ -1,0 +1,78 @@
+From b54b124fd44d67e1a32163aa62c4eab367acce65 Mon Sep 17 00:00:00 2001
+From: Ondrej Zajicek <santiago@crfreenet.org>
+Date: Wed, 4 Nov 2026 18:08:15 +0100
+Subject: [PATCH] BGP: Allocate buffer for notification data in bgp_error()
+
+Do not just keep a pointer to the rx buffer, that is too fragile. Helps
+with cases where notification data are not from the rx buffer. Also
+fixes a bug where pointer to stack was used when OPEN with bad ASN /
+bad version was received.
+
+Reported-By: AISLE and many others
+Target: patch
+Issue: #492
+---
+ proto/bgp/bgp.c     | 11 +++++++++--
+ proto/bgp/packets.c |  6 +++++-
+ 2 files changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/proto/bgp/bgp.c b/proto/bgp/bgp.c
+index 3894b43..087161b 100644
+--- a/proto/bgp/bgp.c
++++ b/proto/bgp/bgp.c
+@@ -1142,6 +1142,7 @@ bgp_close_conn(struct bgp_conn *conn)
+   mb_free(conn->remote_caps);
+   conn->remote_caps = NULL;
+ 
++  mb_free(conn->notify_data);
+   conn->notify_data = NULL;
+   conn->notify_size = 0;
+ }
+@@ -3890,8 +3891,14 @@ bgp_error(struct bgp_conn *c, uint code, uint subcode, byte *data, int len)
+ 
+   c->notify_code = code;
+   c->notify_subcode = subcode;
+-  c->notify_data = data;
+-  c->notify_size = (len > 0) ? len : 0;
++  c->notify_data = NULL;
++  c->notify_size = 0;
++
++  if (len > 0)
++  {
++    c->notify_data = memcpy(mb_alloc(p->p.pool, len), data, len);
++    c->notify_size = len;
++  }
+ 
+   bgp_conn_enter_close_state(c);
+   bgp_schedule_packet(c, NULL, PKT_NOTIFICATION);
+diff --git a/proto/bgp/packets.c b/proto/bgp/packets.c
+index ac1655d..e9d32fe 100644
+--- a/proto/bgp/packets.c
++++ b/proto/bgp/packets.c
+@@ -169,7 +169,7 @@ bgp_create_notification(struct bgp_conn *conn, byte *buf)
+   BGP_TRACE(D_PACKETS, "Sending NOTIFICATION(code=%d.%d)", conn->notify_code, conn->notify_subcode);
+   buf[0] = conn->notify_code;
+   buf[1] = conn->notify_subcode;
+-  memcpy(buf+2, conn->notify_data, conn->notify_size);
++  bmemcpy(buf+2, conn->notify_data, conn->notify_size);
+   return buf + 2 + conn->notify_size;
+ }
+ 
+@@ -3957,6 +3957,7 @@ bgp_rx_notification(struct bgp_conn *conn, byte *pkt, uint len)
+   bgp_log_error(p, BE_BGP_RX, "Received", code, subcode, pkt+21, len-21);
+   bgp_store_error(p, conn, BE_BGP_RX, (code << 16) | subcode);
+ 
++  /* Just pass is synchronously to bgp_conn_leave_established_state() */
+   conn->notify_code = code;
+   conn->notify_subcode = subcode;
+   conn->notify_data = pkt+21;
+@@ -3965,6 +3966,9 @@ bgp_rx_notification(struct bgp_conn *conn, byte *pkt, uint len)
+   bgp_conn_enter_close_state(conn);
+   bgp_schedule_packet(conn, NULL, PKT_SCHEDULE_CLOSE);
+ 
++  conn->notify_data = NULL;
++  conn->notify_size = 0;
++
+   if (err)
+   {
+     bgp_update_startup_delay(p);
